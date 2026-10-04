@@ -1,6 +1,8 @@
 import json
 import os
 
+STOP_WORDS = {"is", "the", "a", "an", "what", "this", "of", "and", "to", "in", "for", "with", "on", "are", "do", "how", "who", "why"}
+
 class RAGService:
     def __init__(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,26 +15,39 @@ class RAGService:
                     if line.strip():
                         self.corpus.append(json.loads(line))
 
-    async def search(self, query: str, top_k: int = 3) -> list:
-        query_words = set(query.lower().split())
+    async def search(self, query: str, top_k: int = 1) -> list:
+        query_words = set(w for w in query.lower().split() if w not in STOP_WORDS)
         scored = []
         
-        # Concept routing for procedural clues
-        if any(w in query_words for w in ["how", "amend", "correct", "dispatch", "verified", "trust"]):
-            query_words.update(["field", "reports", "unsealed", "amendment", "mark"])
-        if any(w in query_words for w in ["guardian", "protect", "wheel"]):
-            query_words.update(["yudhamanyu", "uttamaujas", "instruct"])
-        if any(w in query_words for w in ["resolve", "conflict", "account", "state"]):
-            query_words.update(["sudakshina", "dead", "declare"])
-        if any(w in query_words for w in ["bow", "schema", "notation", "armory"]):
-            query_words.update(["bow_version", "confuses", "ledger"])
-        if any(w in query_words for w in ["credential", "redeem", "final", "artifact", "database"]):
-            query_words.update(["encrypted", "sealed", "altar", "truth"])
+        explicit_match_id = None
+        
+        # Progressive L1 Discovery
+        if "dispatch" in query_words or "report" in query_words:
+            explicit_match_id = "PROC_DISPATCH"
+        elif "amendment" in query_words or "amend" in query_words or ("trust" in query_words and "record" in query_words):
+            explicit_match_id = "PROC_TRUST"
+        elif "seal" in query_words or "verification" in query_words or "mark" in query_words:
+            explicit_match_id = "PROC_MARKER"
+            
+        # L2-L4 & Redeem
+        elif "guardian" in query_words or "wheel" in query_words:
+            explicit_match_id = "PROC_2"
+        elif "conflict" in query_words or "disagree" in query_words:
+            explicit_match_id = "PROC_3"
+        elif "schema" in query_words or "notation" in query_words or "clash" in query_words:
+            explicit_match_id = "PROC_4"
+        elif "credential" in query_words or "ledger" in query_words:
+            explicit_match_id = "PROC_5"
 
         for doc in self.corpus:
-            text_words = set(doc["text"].lower().split())
-            score = len(query_words.intersection(text_words))
-            scored.append((score, doc))
+            if explicit_match_id and doc["source_id"] == explicit_match_id:
+                scored.append((100, doc)) # Absolute priority for explicit routing
+            elif doc["episode"] != "RULES":
+                # Only score standard lore for generic words. 
+                # RULES records are completely hidden from generic queries.
+                text_words = set(w for w in doc["text"].lower().split() if w not in STOP_WORDS)
+                score = len(query_words.intersection(text_words))
+                scored.append((score, doc))
         
         scored.sort(key=lambda x: x[0], reverse=True)
         
