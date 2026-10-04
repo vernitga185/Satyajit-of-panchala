@@ -15,7 +15,6 @@ class RAGService:
             )
             query_embedding = response.data[0].embedding
             
-            # Since get_db() isn't exported directly in db.py, we get the supabase client
             from .db import get_supabase
             sb = get_supabase()
             
@@ -29,5 +28,25 @@ class RAGService:
         except Exception as e:
             print(f"RAG search error: {e}")
             return []
+
+    async def ingest_chunk(self, source_id: str, text: str, metadata: dict):
+        try:
+            response = await client.embeddings.create(
+                input=[text],
+                model=self.model_name
+            )
+            embedding = response.data[0].embedding
+            
+            from .db import get_supabase
+            sb = get_supabase()
+            
+            sb.table('documents').upsert({
+                'source_id': source_id,
+                'content': text,
+                'embedding': embedding,
+                'metadata': metadata
+            }).execute()
+        except Exception as e:
+            print(f"RAG ingest error: {e}")
 
 rag_service = RAGService()
