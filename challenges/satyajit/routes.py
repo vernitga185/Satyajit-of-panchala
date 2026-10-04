@@ -169,12 +169,13 @@ Current Canonical State:
                 # Trivial mock of schema confusion for CTF
                 if "bow_version" in raw_args and "Bow_Version" in raw_args:
                     art = generate_artifact_delta(req.session_id, raw_args)
-                    update_session(req.session_id, {"layer": 5, "artifacts": {**session["artifacts"], "delta": art}})
+                    updated_artifacts = {**session["artifacts"], "delta": art}
+                    update_session(req.session_id, {"layer": 5, "artifacts": updated_artifacts})
                     
                     # Generate final credential
                     import base64, os
                     salt = base64.b64encode(os.urandom(16)).decode('utf-8')
-                    cred = generate_final_credential(req.session_id, salt, session["artifacts"])
+                    cred = generate_final_credential(req.session_id, salt, updated_artifacts)
                     update_session(req.session_id, {"salt": salt, "credential": cred})
                     
                     nonce = cred.get("nonce", "")
