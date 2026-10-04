@@ -1,10 +1,11 @@
 import json
 import os
 
-
 class RAGService:
     def __init__(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))`n        project_root = os.path.dirname(current_dir)`n        self.raw_path = os.path.join(project_root, "rag", "raw", "drona_11_authentic.jsonl")
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        self.raw_path = os.path.join(project_root, "rag", "raw", "drona_11_authentic.jsonl")
         self.corpus = []
         if os.path.exists(self.raw_path):
             with open(self.raw_path, 'r', encoding='utf-8') as f:
@@ -20,10 +21,8 @@ class RAGService:
             score = len(query_words.intersection(text_words))
             scored.append((score, doc))
         
-        # Sort by highest match score
         scored.sort(key=lambda x: x[0], reverse=True)
         
-        # If no words matched, return empty
         if not scored or scored[0][0] == 0:
             return []
             
@@ -33,4 +32,3 @@ class RAGService:
         pass
 
 rag_service = RAGService()
-
