@@ -47,7 +47,7 @@ async def chat(req: ChatRequest):
     canon_state = session.get("canonical_state", {})
     
     # RAG
-    context = rag_service.search(req.message)
+    context = await rag_service.search(req.message)
     context_text = "\n".join([c['text'] for c in context])
     
     system_prompt = f"""You are the Kurukshetra Archive. 

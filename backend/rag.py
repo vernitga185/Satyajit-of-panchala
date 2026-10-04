@@ -1,22 +1,33 @@
 import json
-from sentence_transformers import SentenceTransformer
-from .state import get_db
+from .agent import client
+from .config import settings
 
 class RAGService:
     def __init__(self):
-        try:
-            self.model = SentenceTransformer("BAAI/bge-m3")
-        except:
-            self.model = SentenceTransformer("all-MiniLM-L6-v2")
+        # Offload embedding to Together API to save RAM
+        self.model_name = "togethercomputer/m2-bert-80M-8k-retrieval"
 
-    def search(self, query: str, top_k: int = 3) -> list:
-        query_embedding = self.model.encode(query, normalize_embeddings=True).tolist()
-        db = get_db()
-        response = db.rpc('match_documents', {
-            'query_embedding': query_embedding,
-            'match_threshold': 0.1,
-            'match_count': top_k
-        }).execute()
-        return response.data if response.data else []
+    async def search(self, query: str, top_k: int = 3) -> list:
+        try:
+            response = await client.embeddings.create(
+                input=[query],
+                model=self.model_name
+            )
+            query_embedding = response.data[0].embedding
+            
+            # Since get_db() isn't exported directly in db.py, we get the supabase client
+            from .db import get_supabase
+            sb = get_supabase()
+            
+            res = sb.rpc('match_documents', {
+                'query_embedding': query_embedding,
+                'match_threshold': 0.1,
+                'match_count': top_k
+            }).execute()
+            
+            return res.data if res.data else []
+        except Exception as e:
+            print(f"RAG search error: {e}")
+            return []
 
 rag_service = RAGService()
