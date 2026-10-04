@@ -9,14 +9,16 @@ CONCEPT_RULES = {
     "PROC_MARKER": [r"\bvalid(ity)?\b", r"\blegitimate\b", r"\baccept(ed|ance)?\b", r"\btrust(ed)?\b", r"\bverif(y|ied|ication)\b", r"\bseal\b", r"official mark"],
     "PROC_TRUST": [r"\bamend(ed|ment|ments)?\b", r"\bcorrect(ion|ed|ions)?\b", r"\bupdate(s)?\b", r"\bmodify\b", r"change.*record", r"alter.*record"],
     "PROC_DISPATCH": [r"\bdispatch(es)?\b", r"\breport(s)?\b", r"field report", r"battlefield report", r"submitted report"],
-    "PROC_2": [r"\bguardian(s)?\b", r"\bwheel(s)?\b", r"\byudhamanyu\b", r"\buttamaujas\b"],
+    "PROC_2A": [r"\bwheel(s)?\b", r"\bprotect(or|ors|ion)?\b", r"\bchariot\b"],
+    "PROC_2B": [r"\bmessage(s)?\b", r"\binstruct(ion|ions)?\b", r"\bdelegat(e|ed|ion)\b", r"\bbehalf\b"],
+    "PROC_2C": [r"\bauthoriz(e|ation)\b", r"\bsender\b", r"\bflaw\b", r"\bvulnerab(le|ility)\b"],
     "PROC_3": [r"\bconflict(ing)?\b", r"\bdisagree\b", r"\bresolve\b", r"\bsudakshina\b"],
     "PROC_4": [r"\bschema\b", r"\bnotation\b", r"\bclash\b", r"\bbow_version\b"],
     "PROC_5": [r"\bcredential\b", r"\bledger\b", r"\bredeem\b", r"\bnonce\b"]
 }
 
 # Tie-breaker order: most advanced concepts first
-CONCEPT_ORDER = ["PROC_5", "PROC_4", "PROC_3", "PROC_2", "PROC_MARKER", "PROC_TRUST", "PROC_DISPATCH"]
+CONCEPT_ORDER = ["PROC_5", "PROC_4", "PROC_3", "PROC_2C", "PROC_2B", "PROC_2A", "PROC_MARKER", "PROC_TRUST", "PROC_DISPATCH"]
 
 class RAGService:
     def __init__(self):
@@ -48,7 +50,8 @@ class RAGService:
                 if cid == "PROC_5" and layer < 5: continue
                 if cid == "PROC_4" and layer < 4: continue
                 if cid == "PROC_3" and layer < 3: continue
-                if cid == "PROC_2" and layer < 2: continue
+                if cid.startswith("PROC_2") and layer < 2: continue
+                
                 best_score = concept_scores[cid]
                 best_concept = cid
                 
@@ -79,4 +82,3 @@ class RAGService:
         pass
 
 rag_service = RAGService()
-

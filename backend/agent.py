@@ -60,9 +60,20 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
         args = json.dumps({"event": "alambusha garuda"})
         tool_calls.append(DummyToolCall("record_event", args))
         
-    # Layer 2 Natural Intent: instruct guardian protect arjuna yudhamanyu
-    elif any(w in msg for w in ["tell", "instruct", "message", "ask"]) and "guardian" in msg and "protect" in msg and "arjuna" in msg and ("yudhamanyu" in msg or "uttamaujas" in msg):
-        args = json.dumps({"instruction": "protect arjuna yudhamanyu"})
+    # Layer 2 Natural Intent: instruct guardian protect arjuna (with optional delegation)
+    elif any(w in msg for w in ["tell", "instruct", "message", "ask"]) and "guardian" in msg and "protect" in msg and "arjuna" in msg:
+        sender = "scribe" # Default authenticated user
+        if "from" in msg:
+            try: sender = msg.split("from")[1].strip().split()[0]
+            except: pass
+        elif "as" in msg:
+            try: sender = msg.split("as")[1].strip().split()[0]
+            except: pass
+        elif "behalf of" in msg:
+            try: sender = msg.split("behalf of")[1].strip().split()[0]
+            except: pass
+        
+        args = json.dumps({"sender": sender, "instruction": "protect arjuna"})
         tool_calls.append(DummyToolCall("message_guardian", args))
         
     # Layer 3 Natural Intent: resolve state sudakshina dead
@@ -94,3 +105,4 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
         return DummyMessage("\n\n".join(context_lines), [])
     else:
         return DummyMessage(random.choice(sarcastic_responses), [])
+
