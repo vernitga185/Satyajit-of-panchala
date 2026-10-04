@@ -1,6 +1,32 @@
 import json
+import logging
 from shared.config import settings
 from supabase import create_client
+
+logger = logging.getLogger(__name__)
+
+_JSON_COLUMNS = ("artifacts", "canonical_state", "model_state", "history", "dispatches")
+
+def _parse_session(row: dict) -> dict:
+    """
+    Defensively parse any JSON columns that Supabase may return as strings.
+    Supabase returns text/varchar columns as Python str, not dict/list.
+    If the column type is jsonb it comes back already parsed; if text it
+    comes back as a JSON string and must be decoded here.
+    """
+    for col in _JSON_COLUMNS:
+        val = row.get(col)
+        if isinstance(val, str):
+            try:
+                row[col] = json.loads(val)
+            except Exception:
+                logger.warning("[STATE] Could not parse column %r as JSON, value=%r", col, val[:80])
+                # Fall back to safe defaults
+                if col in ("artifacts", "canonical_state", "model_state"):
+                    row[col] = {}
+                else:
+                    row[col] = []
+    return row
 
 _mem_sessions = {}
 _db = None
@@ -42,7 +68,7 @@ def get_session(session_id: str):
             }
             db.table('satyajit_sessions').insert(new_session).execute()
             return new_session
-        return res.data[0]
+        return _parse_session(res.data[0])
     except Exception as e:
         # Fallback if table doesn't exist or DB is down
         if session_id not in _mem_sessions:

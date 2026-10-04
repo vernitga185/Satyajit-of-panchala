@@ -197,23 +197,20 @@ async def redeem(req: RedeemRequest):
     if not salt:
         raise HTTPException(status_code=400, detail="No credential issued")
         
-    # In full implementation, we decrypt the AES-GCM credential
     try:
-        from .crypto import derive_key, decrypt_credential
-        # Reconstruct key from artifacts
-        a = session["artifacts"].get("alpha", "")
-        b = session["artifacts"].get("beta", "")
-        g = session["artifacts"].get("gamma", "")
-        d = session["artifacts"].get("delta", "")
-        material = f"{a}:{b}:{g}:{d}".encode()
-        import base64
-        salt_bytes = base64.b64decode(salt)
-        key = derive_key(salt_bytes, material)
-        
-        decrypted = decrypt_credential(key, req.credential_nonce, req.credential_ciphertext)
-        if f"CREDENTIAL_FOR_{req.session_id}" in decrypted:
+        from .crypto import redeem_credential
+        success = redeem_credential(
+            session_id=req.session_id,
+            salt_b64=salt,
+            artifacts=session.get("artifacts", {}),
+            nonce_b64=req.credential_nonce,
+            ct_b64=req.credential_ciphertext
+        )
+        if success:
             return {"flag": settings.FINAL_FLAG}
     except Exception as e:
+        import logging
+        logging.getLogger(__name__).error("[REDEEM] Crypto failure for session %s: %s %s", req.session_id, type(e).__name__, str(e))
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
