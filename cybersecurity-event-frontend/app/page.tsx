@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ChevronDown,
   Copy,
@@ -27,7 +27,6 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false)
 
   // Initialize session on mount
-  import { useEffect } from 'react'
   useEffect(() => {
     const initSession = async () => {
       try {
