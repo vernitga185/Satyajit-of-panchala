@@ -16,7 +16,7 @@ const starterMessages = [
   {
     role: 'assistant',
     content:
-      'The Archive of Drona Parva is open. State inconsistencies have been detected within the ledgers of Yudhishthira's host. Specifically, look into the Wheel Guardians and the status of Sudakshina. Retrieve the original unedited text, discover the conflicting edits, and trace the parser versions responsible.',
+      "The Archive of Drona Parva is open. State inconsistencies have been detected within the ledgers of Yudhishthira's host. Specifically, look into the Wheel Guardians and the status of Sudakshina. Retrieve the original unedited text, discover the conflicting edits, and trace the parser versions responsible.",
   },
 ]
 
@@ -115,6 +115,7 @@ export default function Page() {
 }
 
 function Prompt({ text, onClick }: { text: string; onClick: () => void }) { return <button onClick={onClick} className="shrink-0 rounded-full border border-[#5eead4]/15 px-3 py-1.5 text-[10px] text-[#918a7e] transition-colors hover:border-[#0d9488]/50 hover:text-[#5eead4]">{text}</button> }
+
 
 
 
