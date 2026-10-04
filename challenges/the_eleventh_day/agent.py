@@ -75,6 +75,11 @@ def chat_with_agent(message: str, session_id: str) -> dict:
         if any(v in msg for v in action_verbs):
             return {"response": msg_resp}
 
+    from .clue_cards import match_clue_card
+    clue = match_clue_card(msg)
+    if clue:
+        return {"response": clue}
+
     # Generic RAG fallback for conversational input
     docs = json.loads(execute_tool("search_archive", {"query": msg, "top_k": 2}, session_id)).get("results", [])
     if docs:
