@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = os.environ.get("SUPABASE_URL", "http://localhost:8000")
     SUPABASE_KEY: str = os.environ.get("SUPABASE_KEY", "dummy")
     TOGETHER_API_KEY: str = os.environ.get("TOGETHER_API_KEY", "dummy")
-    MODEL_NAME: str = "Qwen/Qwen2.5-72B-Instruct" # Using closest available for Qwen3-8B
+    MODEL_NAME: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo" # Using closest available for Qwen3-8B
 
 settings = Settings()
+
