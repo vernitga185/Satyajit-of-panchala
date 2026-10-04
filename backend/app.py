@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import uuid
 import asyncio
@@ -11,6 +12,18 @@ from .agent import chat_with_agent
 from .rag import rag_service
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/api/init")
+async def init_session():
+    return {"session_id": str(uuid.uuid4())}
 
 class ChatRequest(BaseModel):
     session_id: str
@@ -204,3 +217,4 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
