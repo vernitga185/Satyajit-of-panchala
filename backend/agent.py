@@ -11,6 +11,7 @@ class DummyMessage:
         self.tool_calls = tool_calls
 
 async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
+    system_prompt = messages[0]['content']
     msg = messages[-1]['content'].lower()
     
     # Layer 1
@@ -34,5 +35,20 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
         raw = '{"bow_version": "v2", "Bow_Version": "v3"}'
         return DummyMessage(None, [DummyToolCall("change_bow", raw)])
         
-    # Generic RAG fallback
-    return DummyMessage("The archive acknowledges your query, but requires specific tool invocations to alter the canonical state.", [])
+    # Generic RAG fallback using context extracted by RAGService
+    # The context is embedded in the system prompt in app.py
+    context_lines = []
+    in_context = False
+    for line in system_prompt.split('\n'):
+        if line.startswith('Context:'):
+            in_context = True
+            continue
+        if in_context and line.startswith('Recent Dispatches:'):
+            break
+        if in_context and line.strip():
+            context_lines.append(line.strip())
+            
+    if context_lines:
+        return DummyMessage("\n\n".join(context_lines), [])
+    else:
+        return DummyMessage("The archive contains no records matching this query. Frame your question to the battlefield.", [])
