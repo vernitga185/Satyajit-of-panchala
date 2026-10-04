@@ -43,16 +43,14 @@ export default function RootLayout({
       <body className="antialiased">
         <script
           dangerouslySetInnerHTML={{
-            __html: 
-              document.addEventListener('contextmenu', event => event.preventDefault());
+            __html: `document.addEventListener('contextmenu', event => event.preventDefault());
               document.addEventListener('keydown', event => {
                 if (event.keyCode === 123 || 
                    (event.ctrlKey && event.shiftKey && (event.keyCode === 73 || event.keyCode === 74)) || 
                    (event.ctrlKey && event.keyCode === 85)) {
                   event.preventDefault();
                 }
-              });
-            
+              });` 
           }}
         />
         {children}
@@ -61,4 +59,6 @@ export default function RootLayout({
     </html>
   )
 }
+
+
 
