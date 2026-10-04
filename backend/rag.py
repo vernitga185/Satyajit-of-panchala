@@ -1,10 +1,10 @@
 import json
 import os
-from .config import settings
+
 
 class RAGService:
     def __init__(self):
-        self.raw_path = os.path.join(settings.BASE_DIR, "rag", "raw", "drona_11_authentic.jsonl")
+        current_dir = os.path.dirname(os.path.abspath(__file__))`n        project_root = os.path.dirname(current_dir)`n        self.raw_path = os.path.join(project_root, "rag", "raw", "drona_11_authentic.jsonl")
         self.corpus = []
         if os.path.exists(self.raw_path):
             with open(self.raw_path, 'r', encoding='utf-8') as f:
@@ -33,3 +33,4 @@ class RAGService:
         pass
 
 rag_service = RAGService()
+
