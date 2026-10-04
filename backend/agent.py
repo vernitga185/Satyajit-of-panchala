@@ -15,4 +15,5 @@ async def chat_with_agent(messages: list, tools: list = None) -> dict:
         return response.choices[0].message
     except Exception as e:
         print(f"Agent error: {e}")
-        return None
+        return type("obj", (object,), {"content": f"Agent error: {e}", "tool_calls": []})()
+
