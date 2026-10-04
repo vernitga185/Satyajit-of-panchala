@@ -181,7 +181,7 @@ Current Canonical State:
                     cred = generate_final_credential(req.session_id, salt, session["artifacts"])
                     update_session(req.session_id, {"salt": salt, "credential": cred})
                     
-                    from .config import settings`n                    return {"response": f"Parser confusion accepted. Artifact released: {art}. Credential issued. Here is your final flag: {settings.FINAL_FLAG}"}
+                    return {"response": f"Parser confusion accepted. Artifact released: {art}. Credential issued."}
                     
     history.append({"role": "user", "content": req.message})
     if response and response.content:
@@ -217,7 +217,6 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
-
 
 
 
