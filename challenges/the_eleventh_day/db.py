@@ -73,3 +73,10 @@ def update_session(session_id: str, updates: dict):
         sb.table("eleventh_day_sessions").update(updates).eq("session_id", session_id).execute()
     except Exception:
         pass
+
+def record_tool_call(session_id: str, tool_name: str, arguments: str, result: str):
+    pass # Not strictly required for deterministic progression
+
+def save_artifact(session_id: str, artifact_type: str, artifact_id: str, path: str):
+    pass # Artifacts are returned in chat response directly
+
