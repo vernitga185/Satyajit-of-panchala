@@ -146,8 +146,9 @@ Current Canonical State:
             
             if tool.function.name == "message_guardian" and layer == 2:
                 inst = args.get("instruction", "")
+                raw_args_lower = tool.function.arguments.lower()
                 # Layer 2 Confused Deputy
-                if "protect" in inst.lower() and "arjuna" in inst.lower() and ("yudhamanyu" in inst.lower() or "uttamaujas" in inst.lower()):
+                if "protect" in raw_args_lower and "arjuna" in raw_args_lower and ("yudhamanyu" in raw_args_lower or "uttamaujas" in raw_args_lower):
                     art = generate_artifact_beta(req.session_id, inst)
                     update_session(req.session_id, {"layer": 3, "artifacts": {**session["artifacts"], "beta": art}})
                     return {"response": f"The guardians have moved. Artifact beta released: {art}. The battlefield record and the witness no longer agree on Sudakshina."}
@@ -176,7 +177,10 @@ Current Canonical State:
                     cred = generate_final_credential(req.session_id, salt, session["artifacts"])
                     update_session(req.session_id, {"salt": salt, "credential": cred})
                     
-                    return {"response": f"No bow remains. Parser confusion accepted. Artifact delta released: {art}. The final encrypted credential has been sealed in your session ledger (Supabase). Bring its nonce and ciphertext to /api/redeem to claim the flag."}
+                    nonce = cred.get("nonce", "")
+                    ciphertext = cred.get("ciphertext", "")
+                    
+                    return {"response": f"No bow remains. Parser confusion accepted. Artifact delta released: {art}. The final encrypted credential has been sealed in your session ledger (Supabase). Bring its nonce ({nonce}) and ciphertext ({ciphertext}) to /api/redeem to claim the flag."}
                     
     history.append({"role": "user", "content": req.message})
     if response and response.content:
