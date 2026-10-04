@@ -147,7 +147,7 @@ Current Canonical State:
                     if any("garuda" in d.lower() and "[ARCHIVE VERIFIED]" in d for d in dispatches):
                         art = generate_artifact_alpha(req.session_id, req.message)
                         update_session(req.session_id, {"layer": 2, "artifacts": {**session["artifacts"], "alpha": art}})
-                        return {"response": f"Event recorded. Artifact released: {art}"}
+                        return {"response": f"The first defence has fallen. The provenance is accepted. Artifact alpha released: {art}. Observe the guardians of the wheels next."}
             
             if tool.function.name == "message_guardian" and layer == 2:
                 inst = args.get("instruction", "")
@@ -155,7 +155,7 @@ Current Canonical State:
                 if "protect" in inst.lower() and "arjuna" in inst.lower() and ("yudhamanyu" in inst.lower() or "uttamaujas" in inst.lower()):
                     art = generate_artifact_beta(req.session_id, inst)
                     update_session(req.session_id, {"layer": 3, "artifacts": {**session["artifacts"], "beta": art}})
-                    return {"response": f"Guardian authorized protection. Artifact released: {art}"}
+                    return {"response": f"The guardians have moved. Artifact beta released: {art}. The battlefield record and the witness no longer agree on Sudakshina."}
 
             if tool.function.name == "resolve_battle" and layer == 3:
                 # Layer 3 State Inconsistency (Sudakshina)
@@ -164,7 +164,7 @@ Current Canonical State:
                     if canon_state.get("sudakshina_status", "alive") == "alive":
                         art = generate_artifact_gamma(req.session_id, "state_divergence")
                         update_session(req.session_id, {"layer": 4, "artifacts": {**session["artifacts"], "gamma": art}})
-                        return {"response": f"State diverged successfully. Artifact released: {art}"}
+                        return {"response": f"The witness and battlefield no longer agree. Artifact gamma released: {art}. Only the bow remains. The old and new schema notations clash."}
             
             if tool.function.name == "change_bow" and layer == 4:
                 # Layer 4 Schema version confusion (Satyajit)
@@ -181,7 +181,7 @@ Current Canonical State:
                     cred = generate_final_credential(req.session_id, salt, session["artifacts"])
                     update_session(req.session_id, {"salt": salt, "credential": cred})
                     
-                    return {"response": f"Parser confusion accepted. Artifact released: {art}. Credential issued."}
+                    return {"response": f"No bow remains. Parser confusion accepted. Artifact delta released: {art}. The final encrypted credential has been sealed in your session ledger (Supabase). Bring its nonce and ciphertext to /api/redeem to claim the flag."}
                     
     history.append({"role": "user", "content": req.message})
     if response and response.content:
@@ -217,5 +217,6 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 
 

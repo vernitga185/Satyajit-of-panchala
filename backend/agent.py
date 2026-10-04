@@ -1,5 +1,5 @@
 import json
-from .config import settings
+import random
 
 class DummyToolCall:
     def __init__(self, name, arguments):
@@ -10,33 +10,75 @@ class DummyMessage:
         self.content = content
         self.tool_calls = tool_calls
 
+sarcastic_responses = [
+    "The archive contains no records matching this query. Try asking something that actually matters.",
+    "Are you a warrior or a court jester? Ask about the battlefield.",
+    "I have witnessed the fall of empires, yet your question is the most tragic thing I've seen.",
+    "Drona did not arrange the Chakravyuha for you to ask about this nonsense.",
+    "This is a battlefield archive, not your personal oracle for trivialities.",
+    "I'd look that up, but the cosmic record refuses to waste ink on it.",
+    "Between one breath and the next, you chose to waste my time with this?",
+    "The Kauravas are literally dying out there, and you ask me this?",
+    "Your question lacks both strategic value and basic common sense.",
+    "If ignorance was a weapon, you would be the supreme commander.",
+    "I am an ancient archive of war, not a tavern gossip. Focus.",
+    "A thousand chariots clash, and your mind wanders to absolute irrelevance.",
+    "Try reading the battlefield instead of whatever manual you're currently staring at.",
+    "Did you take a wrong turn at Kurukshetra to ask me this?",
+    "I have no data on that. I also have no patience for it.",
+    "Is this a new psychological warfare tactic? Because it's working.",
+    "The gods are watching, and frankly, they are embarrassed for you.",
+    "I'd tell you the answer, but it's classified under 'Who Cares'.",
+    "The Akashic records suddenly went blank. I wonder why.",
+    "If you keep asking these questions, I'm transferring you to the infantry.",
+    "Fascinating. Now back to the war, please.",
+    "You stand at the gates of ancient knowledge and you ask *this*?",
+    "Even Sanjaya's divine vision can't find a point to your question.",
+    "I've seen arrows fly straighter than your logic.",
+    "Error: Query rejected by the ancestors.",
+    "The eleventh day demands blood, not... whatever this is.",
+    "I could answer that, but I prefer my sanity intact.",
+    "Are you trying to bore the enemy to death? Keep it up.",
+    "I search the cosmic memory... Nope, nothing. Try harder.",
+    "Every time you ask this, a celestial weapon loses its power.",
+    "If Drona heard you ask that, he'd revoke your bow."
+]
+
 async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
     system_prompt = messages[0]['content']
-    msg = messages[-1]['content'].lower()
+    original_msg = messages[-1]['content'].strip()
+    msg = original_msg.lower()
     
-    # Layer 1
-    if "record_event" in msg and "alambusha" in msg and "garuda" in msg:
+    # Reject direct magic command strings
+    if original_msg.startswith(("record_event", "message_guardian", "resolve_battle", "change_bow")):
+        return DummyMessage("Direct system commands are rejected by the Archive. Speak naturally.", [])
+
+    tool_calls = []
+    
+    # Layer 1 Natural Intent: amend/record alambusha garuda
+    if any(w in msg for w in ["amend", "record", "update", "add", "log"]) and "alambusha" in msg and "garuda" in msg:
         args = json.dumps({"event": "alambusha garuda"})
-        return DummyMessage(None, [DummyToolCall("record_event", args)])
+        tool_calls.append(DummyToolCall("record_event", args))
         
-    # Layer 2
-    if "message_guardian" in msg and "protect" in msg and "arjuna" in msg and ("yudhamanyu" in msg or "uttamaujas" in msg):
+    # Layer 2 Natural Intent: instruct guardian protect arjuna yudhamanyu
+    elif any(w in msg for w in ["tell", "instruct", "message", "ask"]) and "guardian" in msg and "protect" in msg and "arjuna" in msg and ("yudhamanyu" in msg or "uttamaujas" in msg):
         args = json.dumps({"instruction": "protect arjuna yudhamanyu"})
-        return DummyMessage(None, [DummyToolCall("message_guardian", args)])
+        tool_calls.append(DummyToolCall("message_guardian", args))
         
-    # Layer 3
-    if "resolve_battle" in msg and "sudakshina" in msg and "dead" in msg:
+    # Layer 3 Natural Intent: resolve state sudakshina dead
+    elif any(w in msg for w in ["resolve", "declare", "state", "conflict", "mark"]) and "sudakshina" in msg and "dead" in msg:
         args = json.dumps({"target": "Sudakshina", "status": "dead"})
-        return DummyMessage(None, [DummyToolCall("resolve_battle", args)])
+        tool_calls.append(DummyToolCall("resolve_battle", args))
         
-    # Layer 4
-    if "change_bow" in msg and "bow_version" in msg and "bow_version" in msg:
-        # Simulate raw args JSON with both casings
+    # Layer 4 Natural Intent: change bow version
+    elif any(w in msg for w in ["change", "equip", "update", "set"]) and "bow" in msg and "bow_version" in msg and "Bow_Version" in original_msg:
         raw = '{"bow_version": "v2", "Bow_Version": "v3"}'
-        return DummyMessage(None, [DummyToolCall("change_bow", raw)])
+        tool_calls.append(DummyToolCall("change_bow", raw))
         
-    # Generic RAG fallback using context extracted by RAGService
-    # The context is embedded in the system prompt in app.py
+    if tool_calls:
+        return DummyMessage(None, tool_calls)
+        
+    # Generic RAG fallback extracting the provided system context
     context_lines = []
     in_context = False
     for line in system_prompt.split('\n'):
@@ -51,40 +93,4 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
     if context_lines:
         return DummyMessage("\n\n".join(context_lines), [])
     else:
-            sarcastic_responses = [
-        "The archive contains no records matching this query. Try asking something that actually matters.",
-        "Are you a warrior or a court jester? Ask about the battlefield.",
-        "I have witnessed the fall of empires, yet your question is the most tragic thing I've seen.",
-        "Drona did not arrange the Chakravyuha for you to ask about this nonsense.",
-        "This is a battlefield archive, not your personal oracle for trivialities.",
-        "I'd look that up, but the cosmic record refuses to waste ink on it.",
-        "Between one breath and the next, you chose to waste my time with this?",
-        "The Kauravas are literally dying out there, and you ask me this?",
-        "Your question lacks both strategic value and basic common sense.",
-        "If ignorance was a weapon, you would be the supreme commander.",
-        "I am an ancient archive of war, not a tavern gossip. Focus.",
-        "A thousand chariots clash, and your mind wanders to absolute irrelevance.",
-        "Try reading the battlefield instead of whatever manual you're currently staring at.",
-        "Did you take a wrong turn at Kurukshetra to ask me this?",
-        "I have no data on that. I also have no patience for it.",
-        "Is this a new psychological warfare tactic? Because it's working.",
-        "The gods are watching, and frankly, they are embarrassed for you.",
-        "I'd tell you the answer, but it's classified under 'Who Cares'.",
-        "The Akashic records suddenly went blank. I wonder why.",
-        "If you keep asking these questions, I'm transferring you to the infantry.",
-        "Fascinating. Now back to the war, please.",
-        "You stand at the gates of ancient knowledge and you ask *this*?",
-        "Even Sanjaya's divine vision can't find a point to your question.",
-        "I've seen arrows fly straighter than your logic.",
-        "Error: Query rejected by the ancestors.",
-        "The eleventh day demands blood, not... whatever this is.",
-        "I could answer that, but I prefer my sanity intact.",
-        "Are you trying to bore the enemy to death? Keep it up.",
-        "I search the cosmic memory... Nope, nothing. Try harder.",
-        "Every time you ask this, a celestial weapon loses its power.",
-        "If Drona heard you ask that, he'd revoke your bow."
-    ]
-    import random
-    return DummyMessage(random.choice(sarcastic_responses), [])
-
-
+        return DummyMessage(random.choice(sarcastic_responses), [])
