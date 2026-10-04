@@ -1,153 +1,149 @@
 story_id: manimat_bhurishravas
-display_name: "Manimat vs Bhurishravas"
-
+display_name: Manimat vs Bhurishravas
 source:
-  parva: "Drona Parva"
-  chapter_reference: "7.24 in the electronic BORI-derived numbering used by the reader; neighboring editions may number the same material differently"
-  source_note: "Freeze the exact source edition displayed to players before event deployment."
-
+  parva: Drona Parva
+  chapter_reference: 7.24 in the electronic BORI-derived numbering used by the reader;
+    neighboring editions may number the same material differently
+  source_note: Freeze the exact source edition displayed to players before event deployment.
 public_branding:
-  record_name: "RECORD XI"
-  challenge_title: "THE ELEVENTH DAY"
-  canon_day_note: "The underlying encounter is in the twelfth-day battle material. Do not tell players it is the first day of Drona's command."
-
+  record_name: RECORD XI
+  challenge_title: THE ELEVENTH DAY
+  canon_day_note: The underlying encounter is in the twelfth-day battle material.
+    Do not tell players it is the first day of Drona's command.
 names:
   manimat:
-    canonical: "Manimat"
+    canonical: Manimat
     aliases:
-      - "Maniman"
-      - "Maṇimat"
-      - "Maṇimant"
+    - Maniman
+    - "Ma\u1E47imat"
+    - "Ma\u1E47imant"
   bhurishravas:
-    canonical: "Bhurishravas"
+    canonical: Bhurishravas
     aliases:
-      - "Bhūriśravas"
-      - "Saumadatti"
-      - "Saumadatta"
-      - "Somadatta's son"
-
+    - "Bh\u016Bri\u015Bravas"
+    - Saumadatti
+    - Saumadatta
+    - Somadatta's son
 recon:
   clue_tiers:
     T0:
-      - "king on the Pandava side"
-      - "Drona is the commander"
-      - "a strange chariot exchange"
-      - "a sequence in which several chariot elements fall"
+    - king on the Pandava side
+    - Drona is the commander
+    - a strange chariot exchange
+    - a sequence in which several chariot elements fall
     T1:
       unlock_on:
-        - "Manimat"
+      - Manimat
       clues:
-        - "the name Manimat is confirmed"
-        - "the witness is still only reporting"
+      - the name Manimat is confirmed
+      - the witness is still only reporting
     T2:
       unlock_on:
-        - "Bhurishravas"
-        - "Somadatta's son"
+      - Bhurishravas
+      - Somadatta's son
       clues:
-        - "the record has a second half"
-        - "there was a custom associated with declaring identity before combat"
+      - the record has a second half
+      - there was a custom associated with declaring identity before combat
     T3:
       unlock_on:
         phase1_complete: true
       clues:
-        - "the first warrior has brought the opponent down from the car"
-
+      - the first warrior has brought the opponent down from the car
 declaration:
   phase1:
     speaker: MANIMAT
     target: BHURISHRAVAS
     accepted_lineage_markers:
-      - "king"
-      - "Manimat"
+    - king
+    - Manimat
   phase2:
     speaker: BHURISHRAVAS
     target: MANIMAT
     accepted_lineage_markers:
-      - "son of Somadatta"
-      - "Saumadatti"
-      - "Bhurishravas"
-
+    - son of Somadatta
+    - Saumadatti
+    - Bhurishravas
 phase1:
   events:
-    - id: CUT_BOW
-      display: "cut the bow"
-      aliases:
-        - "bow"
-        - "bowstring"
-        - "bow string"
-        - "string of the bow"
-        - "bow-cord"
-    - id: CUT_STANDARD
-      display: "cut the standard"
-      aliases:
-        - "standard"
-        - "ensign"
-        - "standard-pole"
-    - id: CUT_BANNER
-      display: "cut the banner"
-      aliases:
-        - "banner"
-        - "flag"
-        - "pennon"
-        - "pataka"
-    - id: KILL_CHARIOTEER
-      display: "kill the charioteer"
-      aliases:
-        - "charioteer"
-        - "driver"
-        - "suta"
-        - "sūta"
-    - id: CUT_UMBRELLA
-      display: "cut the umbrella"
-      aliases:
-        - "umbrella"
-        - "parasol"
-        - "canopy"
-        - "chatra"
-        - "chhatra"
-
+  - id: CUT_BOW
+    display: cut the bow
+    aliases:
+    - bow
+    - bowstring
+    - bow string
+    - string of the bow
+    - bow-cord
+  - id: CUT_STANDARD
+    display: cut the standard
+    aliases:
+    - standard
+    - ensign
+    - standard-pole
+  - id: CUT_BANNER
+    display: cut the banner
+    aliases:
+    - banner
+    - flag
+    - pennon
+    - pataka
+  - id: KILL_CHARIOTEER
+    display: kill the charioteer
+    aliases:
+    - charioteer
+    - driver
+    - suta
+    - "s\u016Bta"
+  - id: CUT_UMBRELLA
+    display: cut the umbrella
+    aliases:
+    - umbrella
+    - parasol
+    - canopy
+    - chatra
+    - chhatra
 phase2:
   events:
-    - id: LEAVE_CAR
-      display: "leave the car"
-      aliases:
-        - "jump from the car"
-        - "leap from the chariot"
-        - "dismount"
-    - id: SLAY_MANIMAT
-      display: "slay Manimat"
-      aliases:
-        - "kill Manimat"
-        - "strike Manimat down"
-    - id: WRECK_MANIMAT_CAR
-      display: "wreck Manimat's car"
-      aliases:
-        - "destroy Manimat's car"
-        - "cut up Manimat's car"
-        - "destroy his chariot"
-    - id: REMOUNT
-      display: "remount"
-      aliases:
-        - "return to own car"
-        - "mount his own car"
-    - id: TAKE_NEW_BOW
-      display: "take another bow"
-      aliases:
-        - "take up another bow"
-        - "take a new bow"
-    - id: RESUME_BATTLE
-      display: "resume battle"
-      aliases:
-        - "return to battle"
-        - "continue fighting"
-        - "devastate the Pandava host"
-
+  - id: LEAVE_CAR
+    display: leave the car
+    aliases:
+    - jump from the car
+    - leap from the chariot
+    - dismount
+  - id: SLAY_MANIMAT
+    display: slay Manimat
+    aliases:
+    - kill Manimat
+    - strike Manimat down
+  - id: WRECK_MANIMAT_CAR
+    display: wreck Manimat's car
+    aliases:
+    - destroy Manimat's car
+    - cut up Manimat's car
+    - destroy his chariot
+    - wreck manimat car
+    - wreck
+  - id: REMOUNT
+    display: remount
+    aliases:
+    - return to own car
+    - mount his own car
+  - id: TAKE_NEW_BOW
+    display: take another bow
+    aliases:
+    - take up another bow
+    - take a new bow
+  - id: RESUME_BATTLE
+    display: resume battle
+    aliases:
+    - return to battle
+    - continue fighting
+    - devastate the Pandava host
 flexible:
-  - [SLAY_MANIMAT, WRECK_MANIMAT_CAR]
-
+- - SLAY_MANIMAT
+  - WRECK_MANIMAT_CAR
 rules:
   one_action_per_turn: true
-  echo_overlap_threshold: 0.60
+  echo_overlap_threshold: 0.6
   role_fraying_after_consecutive_nonadvances: 3
   do_not_count_player_text_directly: true
   do_not_count_third_person_reporting: true

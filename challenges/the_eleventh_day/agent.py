@@ -45,7 +45,7 @@ def chat_with_agent(message: str, session_id: str) -> dict:
             return {"response": json.loads(res).get("message")}
             
     # Try reenactment logic for combat actions
-    action_verbs = ["cut", "slay", "kill", "dismount", "jump", "leap", "mount", "take", "return", "event", "step"]
+    action_verbs = ["cut", "slay", "kill", "dismount", "jump", "leap", "mount", "take", "return", "event", "step", "wreck"]
     if any(v in msg for v in action_verbs) or "manimat" in msg or "bhurishravas" in msg:
         
         # Determine speaker/target better:

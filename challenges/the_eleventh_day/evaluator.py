@@ -18,7 +18,13 @@ class DeterministicEvaluator:
         self.flexible = self.story_def.get("flexible", [])
         
     def check_bundled_actions(self, action_summary: str, event_list: list) -> bool:
-        summary_lower = action_summary.lower()
+        summary_lower = action_summary.lower().strip()
+        
+        # If the summary is an exact match for one alias, it is not bundled.
+        for ev in event_list:
+            if any(alias.lower() == summary_lower for alias in ev.get("aliases", [])):
+                return False
+                
         matches = 0
         for ev in event_list:
             if any(alias.lower() in summary_lower for alias in ev.get("aliases", [])):
