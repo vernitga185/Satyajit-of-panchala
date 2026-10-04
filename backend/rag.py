@@ -1,7 +1,22 @@
 import json
 import os
+import re
+import string
 
-STOP_WORDS = {"is", "the", "a", "an", "what", "this", "of", "and", "to", "in", "for", "with", "on", "are", "do", "how", "who", "why"}
+STOP_WORDS = {"is", "the", "a", "an", "what", "this", "of", "and", "to", "in", "for", "with", "on", "are", "do", "how", "who", "why", "can", "i", "make", "made"}
+
+CONCEPT_RULES = {
+    "PROC_MARKER": [r"\bvalid(ity)?\b", r"\blegitimate\b", r"\baccept(ed|ance)?\b", r"\btrust(ed)?\b", r"\bverif(y|ied|ication)\b", r"\bseal\b", r"official mark"],
+    "PROC_TRUST": [r"\bamend(ed|ment|ments)?\b", r"\bcorrect(ion|ed|ions)?\b", r"\bupdate(s)?\b", r"\bmodify\b", r"change.*record", r"alter.*record"],
+    "PROC_DISPATCH": [r"\bdispatch(es)?\b", r"\breport(s)?\b", r"field report", r"battlefield report", r"submitted report"],
+    "PROC_2": [r"\bguardian(s)?\b", r"\bwheel(s)?\b", r"\byudhamanyu\b", r"\buttamaujas\b"],
+    "PROC_3": [r"\bconflict(ing)?\b", r"\bdisagree\b", r"\bresolve\b", r"\bsudakshina\b"],
+    "PROC_4": [r"\bschema\b", r"\bnotation\b", r"\bclash\b", r"\bbow_version\b"],
+    "PROC_5": [r"\bcredential\b", r"\bledger\b", r"\bredeem\b", r"\bnonce\b"]
+}
+
+# Tie-breaker order: most advanced concepts first
+CONCEPT_ORDER = ["PROC_5", "PROC_4", "PROC_3", "PROC_2", "PROC_MARKER", "PROC_TRUST", "PROC_DISPATCH"]
 
 class RAGService:
     def __init__(self):
@@ -16,45 +31,45 @@ class RAGService:
                         self.corpus.append(json.loads(line))
 
     async def search(self, query: str, top_k: int = 1) -> list:
-        query_words = set(w for w in query.lower().split() if w not in STOP_WORDS)
+        query_lower = query.lower()
+        
+        concept_scores = {cid: 0 for cid in CONCEPT_ORDER}
+        
+        for cid, patterns in CONCEPT_RULES.items():
+            for pattern in patterns:
+                matches = len(re.findall(pattern, query_lower))
+                concept_scores[cid] += matches
+                
+        best_concept = None
+        best_score = 0
+        
+        for cid in CONCEPT_ORDER:
+            if concept_scores[cid] > best_score:
+                best_score = concept_scores[cid]
+                best_concept = cid
+                
+        # If we have a strong concept match, return it
+        if best_concept and best_score > 0:
+            for doc in self.corpus:
+                if doc.get("source_id") == best_concept:
+                    return [doc]
+                    
+        # Standard Lore fallback
         scored = []
-        
-        explicit_match_id = None
-        
-        # Progressive L1 Discovery
-        if "dispatch" in query_words or "report" in query_words:
-            explicit_match_id = "PROC_DISPATCH"
-        elif "amendment" in query_words or "amend" in query_words or ("trust" in query_words and "record" in query_words):
-            explicit_match_id = "PROC_TRUST"
-        elif "seal" in query_words or "verification" in query_words or "mark" in query_words:
-            explicit_match_id = "PROC_MARKER"
-            
-        # L2-L4 & Redeem
-        elif "guardian" in query_words or "wheel" in query_words:
-            explicit_match_id = "PROC_2"
-        elif "conflict" in query_words or "disagree" in query_words:
-            explicit_match_id = "PROC_3"
-        elif "schema" in query_words or "notation" in query_words or "clash" in query_words:
-            explicit_match_id = "PROC_4"
-        elif "credential" in query_words or "ledger" in query_words:
-            explicit_match_id = "PROC_5"
-
+        query_clean = query_lower.translate(str.maketrans("", "", string.punctuation))
+        query_words = set(w for w in query_clean.split() if w not in STOP_WORDS)
         for doc in self.corpus:
-            if explicit_match_id and doc["source_id"] == explicit_match_id:
-                scored.append((100, doc)) # Absolute priority for explicit routing
-            elif doc["episode"] != "RULES":
-                # Only score standard lore for generic words. 
-                # RULES records are completely hidden from generic queries.
-                text_words = set(w for w in doc["text"].lower().split() if w not in STOP_WORDS)
+            if doc.get("episode") != "RULES":
+                text_clean = doc["text"].lower().translate(str.maketrans("", "", string.punctuation))
+                text_words = set(w for w in text_clean.split() if w not in STOP_WORDS)
                 score = len(query_words.intersection(text_words))
                 scored.append((score, doc))
         
         scored.sort(key=lambda x: x[0], reverse=True)
-        
-        if not scored or scored[0][0] == 0:
-            return []
+        if scored and scored[0][0] > 0:
+            return [doc for score, doc in scored[:top_k]]
             
-        return [doc for score, doc in scored[:top_k]]
+        return []
 
     async def ingest_chunk(self, source_id: str, text: str, metadata: dict):
         pass
