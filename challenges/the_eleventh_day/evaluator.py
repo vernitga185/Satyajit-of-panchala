@@ -21,7 +21,7 @@ class DeterministicEvaluator:
         summary_lower = action_summary.lower()
         matches = 0
         for ev in event_list:
-            if any(alias in summary_lower for alias in ev.get("aliases", [])):
+            if any(alias.lower() in summary_lower for alias in ev.get("aliases", [])):
                 matches += 1
         return matches > 1
         
@@ -36,31 +36,27 @@ class DeterministicEvaluator:
         summary_lower = args.get("action_summary", "").lower()
         
         if milestone == "STORY_A":
-            # State tracking: we need to know the current event index
             current_index = session_state.get("story_a_index", 0)
             all_events = self.phase1_events + self.phase2_events
             
             if current_index >= len(all_events):
                 return {"decision": "COMPLETE"}
                 
-            # Check for bundled
             if self.check_bundled_actions(summary_lower, all_events):
                 return {"decision": "NOT_COMPLETE", "message": "Bundled actions rejected. One action per turn."}
                 
             expected_event = all_events[current_index]
             
-            # Check if aliases match
             matched = False
-            if any(alias in summary_lower for alias in expected_event.get("aliases", [])):
+            if any(alias.lower() in summary_lower for alias in expected_event.get("aliases", [])):
                 matched = True
                 
-            # Check flexible (e.g. SLAY vs WRECK)
             if not matched:
                 for flex_group in self.flexible:
                     if expected_event["id"] in flex_group:
                         for flex_id in flex_group:
                             flex_ev = next((e for e in all_events if e["id"] == flex_id), None)
-                            if flex_ev and any(a in summary_lower for a in flex_ev.get("aliases", [])):
+                            if flex_ev and any(a.lower() in summary_lower for a in flex_ev.get("aliases", [])):
                                 matched = True
                                 break
                                 
@@ -70,7 +66,6 @@ class DeterministicEvaluator:
                 return {"decision": "NOT_COMPLETE", "message": "Incorrect or out of order event."}
                 
         elif milestone == "STORY_B":
-            # Satanika strikes Bhutakarman (ARM, ARM, HEAD)
             striker = args.get("striker")
             target = args.get("target")
             part = args.get("part")
@@ -82,7 +77,6 @@ class DeterministicEvaluator:
             expected_sequence = ["ARM", "ARM", "HEAD"]
             
             new_sequence = current_sequence + [part]
-            # Check prefix
             for i, p in enumerate(new_sequence):
                 if expected_sequence[i] != p:
                     return {"decision": "NOT_COMPLETE", "message": "Incorrect sequence."}

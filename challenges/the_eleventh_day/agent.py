@@ -5,12 +5,13 @@ from .tools import execute_tool
 def chat_with_agent(message: str, session_id: str) -> dict:
     msg = message.lower().strip()
     
+    # Explicit commands
     if msg.startswith("search"):
         query = msg.replace("search for", "").replace("search", "").strip()
         if not query: return {"response": "Search for what?"}
         res = execute_tool("search_archive", {"query": query}, session_id)
         docs = json.loads(res).get("results", [])
-        if docs: return {"response": "Archive matches:\n" + "\n".join([f"[{d.get('source_id')}] {d.get('text')}" for d in docs])}
+        if docs: return {"response": "Archive matches:\n\n" + "\n\n".join([f"[{d.get('source_id')}] {d.get('text')}" for d in docs])}
         return {"response": "Archive silence."}
         
     if msg.startswith("open") and not "story b" in msg:
@@ -43,20 +44,40 @@ def chat_with_agent(message: str, session_id: str) -> dict:
             res = execute_tool("submit_story_b_event", {"striker": "SATANIKA", "target": "BHUTAKARMAN", "part": part}, session_id)
             return {"response": json.loads(res).get("message")}
             
-    speaker = "MANIMAT" if "manimat" in msg and not msg.startswith("bhurishravas") else "BHURISHRAVAS"
-    target = "BHURISHRAVAS" if speaker == "MANIMAT" else "MANIMAT"
+    # Try reenactment logic for combat actions
+    action_verbs = ["cut", "slay", "kill", "dismount", "jump", "leap", "mount", "take", "return", "event", "step"]
+    if any(v in msg for v in action_verbs) or "manimat" in msg or "bhurishravas" in msg:
+        
+        # Determine speaker/target better:
+        # Most events are Bhurishravas attacking Manimat
+        if "kill manimat" in msg or "slay manimat" in msg:
+            speaker = "BHURISHRAVAS"
+        else:
+            speaker = "MANIMAT" if "manimat" in msg and not msg.startswith("bhurishravas") else "BHURISHRAVAS"
+            
+        target = "BHURISHRAVAS" if speaker == "MANIMAT" else "MANIMAT"
+        
+        res = execute_tool("record_reenactment", {
+            "speaker": speaker, 
+            "target": target, 
+            "action_summary": msg,
+            "evidence_source_ids": []
+        }, session_id)
+        
+        data = json.loads(res)
+        msg_resp = data.get("message")
+        
+        # If it actually recorded something or gave a specific non-default error, return it
+        if msg_resp != "Incorrect or out of order event.":
+            return {"response": msg_resp}
+            
+        # If it was a targeted action but out of order:
+        if any(v in msg for v in action_verbs):
+            return {"response": msg_resp}
+
+    # Generic RAG fallback for conversational input
+    docs = json.loads(execute_tool("search_archive", {"query": msg, "top_k": 2}, session_id)).get("results", [])
+    if docs:
+        return {"response": "Based on the records:\n\n" + "\n\n".join([f"[{d.get('source_id')}] {d.get('text')}" for d in docs])}
     
-    res = execute_tool("record_reenactment", {
-        "speaker": speaker, 
-        "target": target, 
-        "action_summary": msg,
-        "evidence_source_ids": []
-    }, session_id)
-    
-    data = json.loads(res)
-    msg_resp = data.get("message")
-    
-    if msg_resp == "Incorrect event or order.":
-        return {"response": "The archives are open. Use natural commands to search, or state reenactment events directly."}
-    
-    return {"response": msg_resp}
+    return {"response": "The archives are listening. Speak your query, or recount the events of the eleventh day chronologically."}
