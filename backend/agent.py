@@ -30,7 +30,7 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
         return DummyMessage(None, [DummyToolCall("resolve_battle", args)])
         
     # Layer 4
-    if "change_bow" in msg and "bow_version" in msg and "Bow_Version" in msg:
+    if "change_bow" in msg and "bow_version" in msg and "bow_version" in msg:
         # Simulate raw args JSON with both casings
         raw = '{"bow_version": "v2", "Bow_Version": "v3"}'
         return DummyMessage(None, [DummyToolCall("change_bow", raw)])
@@ -52,3 +52,4 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
         return DummyMessage("\n\n".join(context_lines), [])
     else:
         return DummyMessage("The archive contains no records matching this query. Frame your question to the battlefield.", [])
+
