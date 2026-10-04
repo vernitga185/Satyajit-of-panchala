@@ -127,6 +127,7 @@ phase2:
     aliases:
     - return to own car
     - mount his own car
+    - remount
   - id: TAKE_NEW_BOW
     display: take another bow
     aliases:
