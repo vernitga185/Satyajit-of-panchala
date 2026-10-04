@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+supabase
+python-dotenv
+cryptography
+argon2-cffi
+PyYAML
