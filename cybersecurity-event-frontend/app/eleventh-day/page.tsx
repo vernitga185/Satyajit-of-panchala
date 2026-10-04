@@ -16,7 +16,7 @@ const starterMessages = [
   {
     role: 'assistant',
     content:
-      'The archives are open. Reconstruct the engagement between Manimat and Bhurishravas. Submit events chronologically using natural language.',
+      'The eleventh day begins. Drona has taken command, and every signal carries intent. The battlefield record is built from reports and dispatches sent from the field. Some reports describe events; others are used to amend what has already been recorded. Investigate the reports, dispatches, and amendments to understand how the record is maintained.',
   },
 ]
 
@@ -115,6 +115,7 @@ export default function Page() {
 }
 
 function Prompt({ text, onClick }: { text: string; onClick: () => void }) { return <button onClick={onClick} className="shrink-0 rounded-full border border-[#d8b477]/15 px-3 py-1.5 text-[10px] text-[#918a7e] transition-colors hover:border-[#c6944d]/50 hover:text-[#d8b477]">{text}</button> }
+
 
 
 
