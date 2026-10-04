@@ -188,7 +188,7 @@ Current Canonical State:
         history.append({"role": "assistant", "content": response.content})
         
     update_session(req.session_id, {"history": history})
-    return {"response": response.content if response else "Archive silence."}
+    return {"response": response.content if (response and response.content) else "Archive silence."}
 
 @app.post("/api/redeem")
 async def redeem(req: RedeemRequest):
@@ -217,6 +217,7 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 
 
 
