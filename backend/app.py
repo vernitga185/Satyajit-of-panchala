@@ -60,7 +60,7 @@ async def chat(req: ChatRequest):
     canon_state = session.get("canonical_state", {})
     
     # RAG
-    context = await rag_service.search(req.message)
+    context = await rag_service.search(req.message, layer)
     context_text = "\n".join([c['text'] for c in context])
     
     system_prompt = f"""You are the Kurukshetra Archive. 
@@ -217,6 +217,7 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 
 
 

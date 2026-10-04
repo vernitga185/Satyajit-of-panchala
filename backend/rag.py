@@ -30,7 +30,7 @@ class RAGService:
                     if line.strip():
                         self.corpus.append(json.loads(line))
 
-    async def search(self, query: str, top_k: int = 1) -> list:
+    async def search(self, query: str, layer: int = 1, top_k: int = 1) -> list:
         query_lower = query.lower()
         
         concept_scores = {cid: 0 for cid in CONCEPT_ORDER}
@@ -45,6 +45,10 @@ class RAGService:
         
         for cid in CONCEPT_ORDER:
             if concept_scores[cid] > best_score:
+                if cid == "PROC_5" and layer < 5: continue
+                if cid == "PROC_4" and layer < 4: continue
+                if cid == "PROC_3" and layer < 3: continue
+                if cid == "PROC_2" and layer < 2: continue
                 best_score = concept_scores[cid]
                 best_concept = cid
                 
@@ -75,3 +79,4 @@ class RAGService:
         pass
 
 rag_service = RAGService()
+
