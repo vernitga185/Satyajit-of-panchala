@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import uuid
+import secrets
 from . import db
 from .agent import chat_with_agent
 
@@ -15,13 +16,16 @@ class ChatRequest(BaseModel):
     message: str
 
 class RedeemRequest(BaseModel):
-    session_id: str
     credential: str
+    session_id: str = ""
 
 @router.post("/init")
 async def init_session():
     session_id = str(uuid.uuid4())
-    db.create_session(session_id, "TEAM_GUEST", "salt", "nonce", "seed")
+    salt = secrets.token_hex(16)
+    nonce = secrets.token_hex(16)
+    seed = secrets.token_hex(16)
+    db.create_session(session_id, "TEAM_GUEST", salt, nonce, seed)
     return {"session_id": session_id}
 
 @router.post("/chat")
