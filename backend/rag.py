@@ -1,14 +1,53 @@
 import json
+from .agent import client
+from .config import settings
 
 class RAGService:
     def __init__(self):
-        pass
+        # Offload embedding to Together API to save RAM
+        self.model_name = "BAAI/bge-small-en-v1.5"
 
     async def search(self, query: str, top_k: int = 3) -> list:
-        # Zero-AI fallback: Return hardcoded context
-        return [{"text": "Archive records indicate Drona assumed command on the eleventh day. Formations shifted to standard defensive structures."}]
+        try:
+            response = await client.embeddings.create(
+                input=[query],
+                model=self.model_name
+            )
+            query_embedding = response.data[0].embedding
+            
+            from .db import get_supabase
+            sb = get_supabase()
+            
+            res = sb.rpc('match_documents', {
+                'query_embedding': query_embedding,
+                'match_threshold': 0.1,
+                'match_count': top_k
+            }).execute()
+            
+            return res.data if res.data else []
+        except Exception as e:
+            print(f"RAG search error: {e}")
+            return []
 
     async def ingest_chunk(self, source_id: str, text: str, metadata: dict):
-        pass
+        try:
+            response = await client.embeddings.create(
+                input=[text],
+                model=self.model_name
+            )
+            embedding = response.data[0].embedding
+            
+            from .db import get_supabase
+            sb = get_supabase()
+            
+            sb.table('documents').upsert({
+                'source_id': source_id,
+                'content': text,
+                'embedding': embedding,
+                'metadata': metadata
+            }).execute()
+        except Exception as e:
+            print(f"RAG ingest error: {e}")
 
 rag_service = RAGService()
+
