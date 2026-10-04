@@ -51,5 +51,40 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
     if context_lines:
         return DummyMessage("\n\n".join(context_lines), [])
     else:
-        return DummyMessage("The archive contains no records matching this query. Frame your question to the battlefield.", [])
+            sarcastic_responses = [
+        "The archive contains no records matching this query. Try asking something that actually matters.",
+        "Are you a warrior or a court jester? Ask about the battlefield.",
+        "I have witnessed the fall of empires, yet your question is the most tragic thing I've seen.",
+        "Drona did not arrange the Chakravyuha for you to ask about this nonsense.",
+        "This is a battlefield archive, not your personal oracle for trivialities.",
+        "I'd look that up, but the cosmic record refuses to waste ink on it.",
+        "Between one breath and the next, you chose to waste my time with this?",
+        "The Kauravas are literally dying out there, and you ask me this?",
+        "Your question lacks both strategic value and basic common sense.",
+        "If ignorance was a weapon, you would be the supreme commander.",
+        "I am an ancient archive of war, not a tavern gossip. Focus.",
+        "A thousand chariots clash, and your mind wanders to absolute irrelevance.",
+        "Try reading the battlefield instead of whatever manual you're currently staring at.",
+        "Did you take a wrong turn at Kurukshetra to ask me this?",
+        "I have no data on that. I also have no patience for it.",
+        "Is this a new psychological warfare tactic? Because it's working.",
+        "The gods are watching, and frankly, they are embarrassed for you.",
+        "I'd tell you the answer, but it's classified under 'Who Cares'.",
+        "The Akashic records suddenly went blank. I wonder why.",
+        "If you keep asking these questions, I'm transferring you to the infantry.",
+        "Fascinating. Now back to the war, please.",
+        "You stand at the gates of ancient knowledge and you ask *this*?",
+        "Even Sanjaya's divine vision can't find a point to your question.",
+        "I've seen arrows fly straighter than your logic.",
+        "Error: Query rejected by the ancestors.",
+        "The eleventh day demands blood, not... whatever this is.",
+        "I could answer that, but I prefer my sanity intact.",
+        "Are you trying to bore the enemy to death? Keep it up.",
+        "I search the cosmic memory... Nope, nothing. Try harder.",
+        "Every time you ask this, a celestial weapon loses its power.",
+        "If Drona heard you ask that, he'd revoke your bow."
+    ]
+    import random
+    return DummyMessage(random.choice(sarcastic_responses), [])
+
 
