@@ -16,7 +16,7 @@ const starterMessages = [
   {
     role: 'assistant',
     content:
-      "The Archive of Drona Parva is open. The ledgers of Yudhishthira's host maintain the canonical state of the battlefield. The archive is strict—only authorized dispatches are accepted. Query the records to understand how the provenance is protected.",
+      "The Archive of Drona Parva is open. The ledgers of Yudhishthira's host maintain the canonical state of the battlefield. The archive is strictonly authorized dispatches are accepted. Query the records to understand how the provenance is protected.",
   },
 ]
 
