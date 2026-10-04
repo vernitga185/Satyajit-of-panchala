@@ -16,7 +16,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -217,4 +217,5 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 

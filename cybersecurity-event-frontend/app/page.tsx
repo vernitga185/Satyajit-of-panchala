@@ -30,8 +30,7 @@ export default function Page() {
   useEffect(() => {
     const initSession = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-        const res = await fetch(`${apiUrl}/api/init`, {
+        const res = await fetch(`/api/init`, {
           method: 'POST',
           headers: { 'X-Team-Id': 'TEAM_GUEST' }
         })
@@ -58,8 +57,7 @@ export default function Page() {
     setIsLoading(true)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-      const res = await fetch(`${apiUrl}/api/chat`, {
+      const res = await fetch(`/api/chat`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -108,4 +106,5 @@ export default function Page() {
 }
 
 function Prompt({ text, onClick }: { text: string; onClick: () => void }) { return <button onClick={onClick} className="shrink-0 rounded-full border border-[#d8b477]/15 px-3 py-1.5 text-[10px] text-[#918a7e] transition-colors hover:border-[#c6944d]/50 hover:text-[#d8b477]">{text}</button> }
+
 
