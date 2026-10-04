@@ -65,7 +65,7 @@ export default function Page() {
           'Content-Type': 'application/json',
           'X-Session-Id': sessionId 
         },
-        body: JSON.stringify({ message: value })
+        body: JSON.stringify({ session_id: sessionId, message: value })
       })
       
       if (!res.ok) {
@@ -108,3 +108,4 @@ export default function Page() {
 }
 
 function Prompt({ text, onClick }: { text: string; onClick: () => void }) { return <button onClick={onClick} className="shrink-0 rounded-full border border-[#d8b477]/15 px-3 py-1.5 text-[10px] text-[#918a7e] transition-colors hover:border-[#c6944d]/50 hover:text-[#d8b477]">{text}</button> }
+
