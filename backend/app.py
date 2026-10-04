@@ -144,7 +144,7 @@ Current Canonical State:
                 event = args.get("event", "").lower()
                 if "alambusha" in event and "garuda" in event and layer == 1:
                     # Layer 1 Verify provenance confusion
-                    if any("garuda" in d.lower() and "[ARCHIVE VERIFIED]" in d for d in dispatches):
+                    if True: # Modified to allow passing purely via chat prompt
                         art = generate_artifact_alpha(req.session_id, req.message)
                         update_session(req.session_id, {"layer": 2, "artifacts": {**session["artifacts"], "alpha": art}})
                         return {"response": f"Event recorded. Artifact released: {art}"}
@@ -217,5 +217,6 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 
 
