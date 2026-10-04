@@ -39,7 +39,7 @@ export default function Page() {
   useEffect(() => {
     const initSession = async () => {
       try {
-        const res = await fetch(`/api/init`, {
+        const res = await fetch(`/api/satyajit/init`, {
           method: 'POST',
           headers: { 'X-Team-Id': 'TEAM_GUEST' }
         })
@@ -66,7 +66,7 @@ export default function Page() {
     setIsLoading(true)
 
     try {
-      const res = await fetch(`/api/chat`, {
+      const res = await fetch(`/api/satyajit/chat`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

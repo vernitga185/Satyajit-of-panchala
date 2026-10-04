@@ -4,24 +4,19 @@ import uuid
 import asyncio
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
-from .config import settings
+from shared.config import settings
 from .state import get_session, update_session
 from .crypto import generate_final_credential, decrypt_credential
 from .artifacts import generate_artifact_alpha, generate_artifact_beta, generate_artifact_gamma, generate_artifact_delta
 from .agent import chat_with_agent
 from .rag import rag_service
 
-app = FastAPI()
+from fastapi import APIRouter
+router = APIRouter()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-@app.post("/api/init")
+
+@router.post("/init")
 async def init_session():
     return {"session_id": str(uuid.uuid4())}
 
@@ -38,7 +33,7 @@ class RedeemRequest(BaseModel):
     credential_nonce: str
     credential_ciphertext: str
 
-@app.post("/api/dispatch")
+@router.post("/dispatch")
 async def submit_dispatch(req: DispatchRequest):
     # Layer 1: Alambusha provenance confusion
     session = get_session(req.session_id)
@@ -51,7 +46,7 @@ async def submit_dispatch(req: DispatchRequest):
     update_session(req.session_id, {"dispatches": dispatches})
     return {"status": "accepted"}
 
-@app.post("/api/chat")
+@router.post("/chat")
 async def chat(req: ChatRequest):
     session = get_session(req.session_id)
     history = session.get("history", [])
@@ -190,7 +185,7 @@ Current Canonical State:
     update_session(req.session_id, {"history": history})
     return {"response": response.content if (response and response.content) else "Archive silence."}
 
-@app.post("/api/redeem")
+@router.post("/redeem")
 async def redeem(req: RedeemRequest):
     session = get_session(req.session_id)
     salt = session.get("salt")
@@ -217,6 +212,7 @@ async def redeem(req: RedeemRequest):
         raise HTTPException(status_code=400, detail="Crypto failure")
     
     raise HTTPException(status_code=400, detail="Invalid credential")
+
 
 
 

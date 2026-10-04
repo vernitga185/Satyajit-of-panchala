@@ -24,7 +24,7 @@ class RAGService:
     def __init__(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(current_dir)
-        self.raw_path = os.path.join(project_root, "rag", "raw", "drona_11_authentic.jsonl")
+        self.raw_path = os.path.join(current_dir, "data", "drona_11_authentic.jsonl")
         self.corpus = []
         if os.path.exists(self.raw_path):
             with open(self.raw_path, 'r', encoding='utf-8') as f:
