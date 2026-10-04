@@ -5,7 +5,7 @@ from .config import settings
 class RAGService:
     def __init__(self):
         # Offload embedding to Together API to save RAM
-        self.model_name = "togethercomputer/m2-bert-80M-8k-retrieval"
+        self.model_name = "BAAI/bge-small-en-v1.5"
 
     async def search(self, query: str, top_k: int = 3) -> list:
         try:
@@ -50,3 +50,4 @@ class RAGService:
             print(f"RAG ingest error: {e}")
 
 rag_service = RAGService()
+
