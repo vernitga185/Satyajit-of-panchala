@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'The Eleventh Day — Kuru Battlefield Archive',
+  title: 'Satyajit of Panchala',
   description: 'A recovered battlefield witness from Kurukshetra. Investigate Record XI.',
   generator: 'v0.app',
   icons: {
@@ -16,12 +16,7 @@ export const metadata: Metadata = {
         url: '/icon-dark-32x32.png',
         media: '(prefers-color-scheme: dark)',
       },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
     ],
-    apple: '/apple-icon.png',
   },
 }
 

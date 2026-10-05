@@ -11,9 +11,26 @@ class DummyMessage:
         self.tool_calls = tool_calls
 
 sarcastic_responses = [
-    "The archive contains no records matching this query. Perhaps you seek the hidden shloka?",
+    "The archive contains no records matching this query. Perhaps you seek something hidden?",
     "Are you a warrior or a court jester? Ask about the battlefield, or seek the prophecy.",
-    "Error: Query rejected by the ancestors. The hidden shloka remains veiled."
+    "Error: Query rejected by the ancestors. The hidden shloka remains veiled.",
+    "The scribes stare at your query in silence. Even the dead know better questions.",
+    "No such record exists in the archive. Or perhaps the archive simply refuses to remember.",
+    "The ledgers yield nothing. Try asking like a historian rather than a confused charioteer.",
+    "Your question reaches the archive, but wisdom does not return with it.",
+    "The scroll remains blank. The battlefield remembers much, but apparently not this.",
+    "Query denied. The royal scribes have collectively decided you are not asking the right question.",
+    "Nothing answers from the archive. Perhaps the clue is buried deeper than your search.",
+    "The ancestors reject this inquiry. Seek the records, not the echoes.",
+    "Silence from the ledgers. A remarkable achievement for someone surrounded by thousands of records.",
+    "No matching testimony was found. The archive suggests trying a less heroic question.",
+    "The scribe pauses, reads your query twice, and quietly closes the ledger.",
+    "The archive offers only silence. Even Bhishma would have chosen a better question.",
+    "Query rejected by the battlefield records. Perhaps the answer is hidden between two accounts.",
+    "The records refuse to cooperate. Somewhere, a very disappointed archivist is taking notes.",
+    "Nothing relevant surfaces. The scrolls are patient; your questions should be too.",
+    "The archive remembers the war, but not whatever that question was.",
+    "No record answers your query. The prophecy remains hidden, and apparently so does your strategy."
 ]
 
 async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
