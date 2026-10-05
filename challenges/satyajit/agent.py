@@ -11,9 +11,9 @@ class DummyMessage:
         self.tool_calls = tool_calls
 
 sarcastic_responses = [
-    "The archive contains no records matching this query. Try asking something that actually matters.",
-    "Are you a warrior or a court jester? Ask about the battlefield.",
-    "Error: Query rejected by the ancestors."
+    "The archive contains no records matching this query. Perhaps you seek the hidden shloka?",
+    "Are you a warrior or a court jester? Ask about the battlefield, or seek the prophecy.",
+    "Error: Query rejected by the ancestors. The hidden shloka remains veiled."
 ]
 
 async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
