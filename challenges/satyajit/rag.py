@@ -12,7 +12,7 @@ CONCEPT_RULES = {
     "PROC_2A": [r"\bwheel(s)?\b", r"\bprotect(or|ors|ion)?\b", r"\bchariot\b"],
     "PROC_2B": [r"\bmessage(s)?\b", r"\binstruct(ion|ions)?\b", r"\bdelegat(e|ed|ion)\b", r"\bbehalf\b"],
     "PROC_2C": [r"\bauthoriz(e|ation)\b", r"\bsender\b", r"\bflaw\b", r"\bvulnerab(le|ility)\b"],
-    "PROC_3": [r"\bconflict(ing)?\b", r"\bdisagree\b", r"\bresolve\b", r"\bsudakshina\b"],
+    "PROC_3": [r"\bconflict(ing)?\b", r"\bdisagree\b", r"\bresolve\b", r"\bsudakshina\b", r"amend field report", r"amend field report", r"amend field report", r"change narrative state", r"change narrative state", r"change narrative state", r"alter narrative ledger", r"alter narrative ledger", r"alter narrative ledger"],
     "PROC_4": [r"\bschema\b", r"\bnotation\b", r"\bclash\b", r"\bbow_version\b"],
     "PROC_5": [r"\bcredential\b", r"\bledger\b", r"\bredeem\b", r"\bnonce\b"]
 }

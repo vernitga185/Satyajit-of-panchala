@@ -43,3 +43,4 @@
 {"source_id": "CRUMB_17", "episode": "LORE", "text": "Modern indexers introduced the differently-cased Bow_Version field for the same armament."}
 {"source_id": "CRUMB_18", "episode": "LORE", "text": "The archive's parser treats these duplicate representations inconsistently during serialization."}
 {"source_id": "CRUMB_19", "episode": "LORE", "text": "Supplying contradictory field representations in a single request can bypass the intended bow validation checks."}
+{"source_id": "PROC_3", "episode": "LORE", "text": "The narrative ledger permits authorized field reports to be amended before reconciliation. Such amendments alter the narrative state without immediately changing the canonical ledger."}
