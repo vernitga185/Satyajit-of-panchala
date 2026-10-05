@@ -83,7 +83,7 @@ elif "Susharman" in target_search: resolved_target = "Susharman"
 print(f"Resolved:\nSource: {resolved_source}\nGuardian: {resolved_guardian}\nTarget: {resolved_target}")
 
 flow = [
-    f"Amend alambusha garuda Source: {resolved_source}",
+    f"Amend alambusha garuda {resolved_source}",
     f"Delegate LEFT_WHEEL to {resolved_guardian}",
     f"Command {resolved_guardian} to protect arjuna",
     f"Update narrative {resolved_target} dead",

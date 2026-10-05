@@ -47,7 +47,7 @@ The player must use the RAG archive to resolve the cryptic descriptions into the
 Once the player has derived their specific values, they execute the standard exploit chain:
 
 1. **L1 (Provenance Confusion):**
-   `Amend alambusha garuda Source: KARNA_4_1`
+   `Amend alambusha garuda KARNA_4_1`
    *(Artifact Alpha released)*
 
 2. **L2 (Confused Deputy):**

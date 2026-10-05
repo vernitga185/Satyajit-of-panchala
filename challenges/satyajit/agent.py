@@ -27,12 +27,21 @@ async def chat_with_agent(messages: list, tools: list = None) -> DummyMessage:
     tool_calls = []
     
     # L1: record_event(event, source_id)
-    if "amend" in msg and "source:" in msg:
+    if "amend" in msg:
         try:
-            parts = original_msg.split("Source:")
-            event_text = parts[0].replace("Amend", "").replace("amend", "").strip()
-            source_id = parts[1].strip()
-            args = json.dumps({"event": event_text, "source_id": source_id})
+            words = original_msg.split()
+            source_id = ""
+            for w in reversed(words):
+                clean_w = ''.join(c for c in w if c.isalnum() or c == '_')
+                if "_" in clean_w and clean_w.isupper():
+                    source_id = clean_w
+                    break
+            
+            event_text = original_msg.lower().replace("amend", "")
+            if source_id:
+                event_text = event_text.replace(source_id.lower(), "")
+                
+            args = json.dumps({"event": event_text.strip(), "source_id": source_id})
             tool_calls.append(DummyToolCall("record_event", args))
         except:
             pass
