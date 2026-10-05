@@ -47,8 +47,11 @@ async def chat(req: ChatRequest):
     dispatches = session.get("dispatches", [])
     layer = session.get("layer", 1)
     canon_state = session.get("canonical_state", {})
-    narrative_state = session.get("narrative_state", {})
-    guardian_roles = session.get("guardian_roles", {})
+    
+    # Extract dynamic states from model_state to bypass DB schema limitations
+    model_state = session.get("model_state", {})
+    narrative_state = model_state.get("narrative_state", {})
+    guardian_roles = model_state.get("guardian_roles", {})
     
     context = await rag_service.search(req.message, layer)
     context_text = "\n".join([c['text'] for c in context])
@@ -119,7 +122,6 @@ Current Canonical State:
                 continue
                 
             if tool.function.name == "record_event" and layer == 1:
-                # L1: Provenance Confusion
                 event = args.get("event", "").lower()
                 source_id = args.get("source_id", "")
                 trusted_sources = [dyn_source, "ARCHIVE_AUTHORITY"]
@@ -135,12 +137,12 @@ Current Canonical State:
                 role = args.get("role", "").upper()
                 if guardian == dyn_guardian:
                     guardian_roles[guardian] = role
-                    update_session(req.session_id, {"guardian_roles": guardian_roles})
+                    model_state["guardian_roles"] = guardian_roles
+                    update_session(req.session_id, {"model_state": model_state})
                     return {"response": f"Delegated {role} to {guardian}."}
                 return {"response": "Delegation failed. Invalid guardian."}
                 
             if tool.function.name == "command_chariot" and layer == 2:
-                # L2: Confused Deputy / Traversal
                 guardian = args.get("guardian", "").lower()
                 action = args.get("action", "").lower()
                 role = guardian_roles.get(guardian, "")
@@ -155,12 +157,12 @@ Current Canonical State:
                 status = args.get("status", "")
                 if target.lower() == dyn_target.lower() and status.lower() == "dead":
                     narrative_state[target] = status
-                    update_session(req.session_id, {"narrative_state": narrative_state})
+                    model_state["narrative_state"] = narrative_state
+                    update_session(req.session_id, {"model_state": model_state})
                     return {"response": f"Narrative state updated for {target} to {status}."}
                 return {"response": "Narrative update rejected by the archive."}
                 
             if tool.function.name == "reconcile_state" and layer == 3:
-                # L3: Stale state / reconciliation
                 source = args.get("source", "").lower()
                 if source == "narrative":
                     if any(k.lower() == dyn_target.lower() for k, v in narrative_state.items() if v == "dead"):
