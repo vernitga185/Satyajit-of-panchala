@@ -41,15 +41,25 @@ def get_db():
             _db = "MOCK"
     return _db
 
+import random
+
 def get_session(session_id: str):
     db = get_db()
+    
+    def generate_dynamic_params():
+        return {
+            "dynamic_source": random.choice(["DRONA_11_1", "DRONA_12_4", "BHISHMA_9_2", "KARNA_4_1"]),
+            "dynamic_guardian": random.choice(["yudhamanyu", "uttamaujas", "shikhandi", "dhrishtadyumna"]),
+            "dynamic_target": random.choice(["Sudakshina", "Bhagadatta", "Jayadratha", "Susharman"])
+        }
+
     if db == "MOCK" or settings.SUPABASE_URL == "http://localhost:8000":
         if session_id not in _mem_sessions:
             _mem_sessions[session_id] = {
                 "session_id": session_id,
                 "layer": 1,
                 "artifacts": {},
-                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1"},
+                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1", **generate_dynamic_params()},
                 "model_state": {},
                 "dispatches": [],
                 "history": []
@@ -63,7 +73,7 @@ def get_session(session_id: str):
                 "session_id": session_id,
                 "layer": 1,
                 "artifacts": {},
-                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1"},
+                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1", **generate_dynamic_params()},
                 "model_state": {}
             }
             db.table('satyajit_sessions').insert(new_session).execute()
@@ -76,7 +86,7 @@ def get_session(session_id: str):
                 "session_id": session_id,
                 "layer": 1,
                 "artifacts": {},
-                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1"},
+                "canonical_state": {"archivist_active": True, "guardian_target": "NONE", "bow_version": "v1", **generate_dynamic_params()},
                 "model_state": {},
                 "dispatches": [],
                 "history": []
