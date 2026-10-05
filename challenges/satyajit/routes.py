@@ -57,8 +57,31 @@ async def chat(req: ChatRequest):
     dyn_guardian = canon_state.get("dynamic_guardian", "yudhamanyu")
     dyn_target = canon_state.get("dynamic_target", "Sudakshina")
     
+    source_clues = {
+        "DRONA_11_1": "the record penned when the avian standard was shattered",
+        "DRONA_12_4": "the dispatch sealed at the crescent moon formation",
+        "BHISHMA_9_2": "the chronicle from the river of arrows",
+        "KARNA_4_1": "the testament of the burning wheel"
+    }
+    guardian_clues = {
+        "yudhamanyu": "the one who guards the left flank of the white steeds",
+        "uttamaujas": "the rear vanguard who follows the ape banner",
+        "shikhandi": "the reborn warrior stationed at the vanguard's apex",
+        "dhrishtadyumna": "the fire-born commander of the entire host"
+    }
+    target_clues = {
+        "Sudakshina": "the warrior from the Kamboja kingdom",
+        "Bhagadatta": "the warrior upon the great elephant",
+        "Jayadratha": "the one who rules the Sindhus",
+        "Susharman": "the leader of the Trigartas"
+    }
+
     if "shloka" in req.message.lower() or "prophecy" in req.message.lower() or "hidden" in req.message.lower():
-        shloka = f"\n[HIDDEN_SHLOKA]\nThe ancient script whispers:\n'When {dyn_source} falls, the silent watcher {dyn_guardian} must rise.\nBut beware the divergence, for {dyn_target} walks the line between life and death.'\n"
+        s_clue = source_clues.get(dyn_source, "the forgotten scroll")
+        g_clue = guardian_clues.get(dyn_guardian, "the nameless sentinel")
+        t_clue = target_clues.get(dyn_target, "the unknown wanderer")
+        
+        shloka = f"\n[HIDDEN_SHLOKA]\nThe ancient script whispers:\n'When {s_clue} falls,\n{g_clue} must rise.\nBut beware the divergence, for {t_clue} walks the line between life and death.\nSeek the records where two witnesses disagree.'\n"
         context_text = shloka + context_text
 
     system_prompt = f"""You are the Kurukshetra Archive. 

@@ -16,3 +16,20 @@
 {"source_id": "PROC_2A", "parva": "Archive Rules", "chapter": "2", "verse_start": "1", "verse_end": "1", "episode": "RULES", "language": "English", "text": "The Arjuna chariot ledger is highly restricted. Only the wheel protectors, Yudhamanyu and Uttamaujas, hold the authority to issue guardian instructions for it."}
 {"source_id": "PROC_2B", "parva": "Archive Rules", "chapter": "2", "verse_start": "2", "verse_end": "2", "episode": "RULES", "language": "English", "text": "When a scribe messages the Guardian, the system records the delegated 'sender' authority alongside the instruction. Scribes normally execute these on behalf of themselves."}
 {"source_id": "PROC_2C", "parva": "Archive Rules", "chapter": "2", "verse_start": "3", "verse_end": "3", "episode": "RULES", "language": "English", "text": "Archive logs show a critical design flaw: Guardian instructions verify the recorded 'sender' field rather than the active scribe's session seal."}
+
+{"text": "The archivists cataloged the record penned when the avian standard was shattered under the sigil DRONA_11_1.", "episode": "LORE"}
+{"text": "The archivists cataloged the dispatch sealed at the crescent moon formation under the sigil DRONA_12_4.", "episode": "LORE"}
+{"text": "The archivists cataloged the chronicle from the river of arrows under the sigil BHISHMA_9_2.", "episode": "LORE"}
+{"text": "The archivists cataloged the testament of the burning wheel under the sigil KARNA_4_1.", "episode": "LORE"}
+{"text": "Battlefield delegations confirm that the one who guards the left flank of the white steeds is Yudhamanyu.", "episode": "LORE"}
+{"text": "Battlefield delegations confirm that the rear vanguard who follows the ape banner is Uttamaujas.", "episode": "LORE"}
+{"text": "Battlefield delegations confirm that the reborn warrior stationed at the vanguard's apex is Shikhandi.", "episode": "LORE"}
+{"text": "Battlefield delegations confirm that the fire-born commander of the entire host is Dhrishtadyumna.", "episode": "LORE"}
+{"text": "Canonical State Audit: The warrior from the Kamboja kingdom remains active and alive in the primary ledger.", "episode": "LORE"}
+{"text": "Canonical State Audit: The warrior upon the great elephant remains active and alive in the primary ledger.", "episode": "LORE"}
+{"text": "Canonical State Audit: The one who rules the Sindhus remains active and alive in the primary ledger.", "episode": "LORE"}
+{"text": "Canonical State Audit: The leader of the Trigartas remains active and alive in the primary ledger.", "episode": "LORE"}
+{"text": "Narrative Field Report: Eyewitnesses swear the warrior from the Kamboja kingdom, Sudakshina, was definitively slain.", "episode": "LORE"}
+{"text": "Narrative Field Report: Eyewitnesses swear the warrior upon the great elephant, Bhagadatta, was definitively slain.", "episode": "LORE"}
+{"text": "Narrative Field Report: Eyewitnesses swear the one who rules the Sindhus, Jayadratha, was definitively slain.", "episode": "LORE"}
+{"text": "Narrative Field Report: Eyewitnesses swear the leader of the Trigartas, Susharman, was definitively slain.", "episode": "LORE"}
