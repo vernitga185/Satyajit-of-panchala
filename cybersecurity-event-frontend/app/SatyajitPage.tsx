@@ -35,29 +35,44 @@ export default function SatyajitPage() {
     scrollToBottom()
   }, [messages])
 
-  // Initialize session on mount
   useEffect(() => {
+    let mounted = true
     const initSession = async () => {
-      try {
-        const res = await fetch(`/api/satyajit/init`, {
-          method: 'POST',
-          headers: { 'X-Team-Id': 'TEAM_GUEST' }
-        })
-        if (res.ok) {
-          const data = await res.json()
-          setSessionId(data.session_id)
+      while (mounted) {
+        try {
+          const res = await fetch(`/api/satyajit/init`, {
+            method: 'POST',
+            headers: { 'X-Team-Id': 'TEAM_GUEST' }
+          })
+          if (res.ok) {
+            const data = await res.json()
+            if (mounted) setSessionId(data.session_id)
+            break
+          }
+        } catch (err) {
+          console.error("Failed to init session, retrying...", err)
         }
-      } catch (err) {
-        console.error("Failed to init session", err)
+        await new Promise(r => setTimeout(r, 5000))
       }
     }
     initSession()
+    return () => { mounted = false }
   }, [])
 
   async function submit() {
     const value = input.trim()
-    if (!value || isLoading || !sessionId) return
+    if (!value || isLoading) return
     
+    if (!sessionId) {
+      setInput('')
+      setMessages((current) => [
+        ...current,
+        { role: 'user', content: value },
+        { role: 'assistant', content: 'Connection to the archive is still waking up (this may take up to 60 seconds). Please wait a moment and try again.' }
+      ])
+      return
+    }
+
     setInput('')
     setMessages((current) => [
       ...current,
