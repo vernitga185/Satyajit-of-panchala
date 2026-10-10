@@ -6,11 +6,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  async rewrites() {
+  async headers() {
     return [
       {
-        source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL + '/api/:path*' : 'http://localhost:8000/api/:path*',
+        source: '/:path*.(jpg|jpeg|png|ico|svg|woff|woff2)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=604800, immutable' },
+        ],
       },
     ]
   },
