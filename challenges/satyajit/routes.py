@@ -10,12 +10,16 @@ from .crypto import generate_final_credential, decrypt_credential
 from .artifacts import generate_artifact_alpha, generate_artifact_beta, generate_artifact_gamma, generate_artifact_delta
 from .agent import chat_with_agent
 from .rag import rag_service
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from fastapi import APIRouter
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/init")
-async def init_session():
+@limiter.limit("30/minute")
+async def init_session(request: Request):
     return {"session_id": str(uuid.uuid4())}
 
 class ChatRequest(BaseModel):
@@ -32,7 +36,8 @@ class RedeemRequest(BaseModel):
     credential_ciphertext: str
 
 @router.post("/dispatch")
-async def submit_dispatch(req: DispatchRequest):
+@limiter.limit("30/minute")
+async def submit_dispatch(request: Request, req: DispatchRequest):
     session = get_session(req.session_id)
     dispatches = session.get("dispatches", [])
     normalized = f"[BATTLEFIELD DISPATCH]: {req.report.strip()}"
@@ -41,7 +46,8 @@ async def submit_dispatch(req: DispatchRequest):
     return {"status": "accepted"}
 
 @router.post("/chat")
-async def chat(req: ChatRequest):
+@limiter.limit("60/minute")
+async def chat(request: Request, req: ChatRequest):
     session = get_session(req.session_id)
     history = session.get("history", [])
     dispatches = session.get("dispatches", [])
@@ -195,7 +201,8 @@ Current Canonical State:
     return {"response": response.content if (response and response.content) else "Archive silence."}
 
 @router.post("/redeem")
-async def redeem(req: RedeemRequest):
+@limiter.limit("10/minute")
+async def redeem(request: Request, req: RedeemRequest):
     session = get_session(req.session_id)
     salt = session.get("salt")
     if not salt:
